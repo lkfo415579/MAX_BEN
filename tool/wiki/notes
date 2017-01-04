@@ -1,0 +1,30 @@
+3/23/2016
+-----
+clean up wiki, procedure
+----
+1.stanford segmentation&moses tokenization
+2.splitter both languages (en is easy)
+****tough for zh*****
+1. first use wiki_pre.py > tmp_file,take all the doc title and end tag out
+2. using chinese splitter & stanford segmentation
+3. reput the doc info back to the corpus
+--------------
+wiki_clean , is used to clean long files
+&&&&&&&&&&&&
+0.splite chinese sentences
+1.use  [grep -n '^</\?doc.*\?>$' result1.zh] , [grep -n '^</\?doc.*\?>$' result1.zh | wc -l grep -n '^</\?doc.*\?>$' result1.zh]
+2.reput back
+
+#PS: be careful , the matched result are not finished.
+
+
+***********
+God's guilde///11/26/2016
+####
+1.grep -n '^</\?doc.*\?>$' /home/db32555/MM/max_ben/zh-pt/zh_wiki > dogtag
+2.python /home/db32555/MM/nltk/max_git/tool/wiki/wiki_delete.py zh-pt/zh_wiki dogtag
+3.cat zh-pt/zh_wiki.delete | cconv -f utf8 -t utf8-cn > zh-pt/zh_wiki.delete.gb
+4. ./segment.sh ctb /home/db32555/MM/max_ben/zh-pt/zh_wiki.delete.gb UTF-8 0 > /home/db32555/MM/max_ben/zh-pt/zh_wiki.delete.gb.tok
+5.%s/\$ \$ \$ \$ \$ \$ \$/$$$$$$$
+5.%s/@ @ @ @ @ @ @/@@@@@@@/g
+6. python /home/db32555/MM/nltk/max_git/tool/wiki/wiki_reput.py /home/db32555/MM/max_ben/zh-pt/zh_wiki.delete.gb.segment /home/db32555/MM/max_ben/dogtag
