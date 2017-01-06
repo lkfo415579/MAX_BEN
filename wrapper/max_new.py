@@ -223,6 +223,7 @@ def append_features(corpus, tag, q, long, pid, info):
 	run = 0
 	len_all = len(corpus)
 	featuresets = []
+	print len(corpus)
 	for (zh, en) in corpus:
 		if run % 100 == 0:
 			tmp_per = float(float(run) / float(len_all)) * 100
@@ -238,9 +239,29 @@ def append_features(corpus, tag, q, long, pid, info):
 	if not info:
 		print '\r###End of features Tag : %5s' % tag + '#####PID : %2d' % (pid) + '###########              \r'
 
-def split_list(alist, wanted_parts=1):
-	length = len(alist)
-	return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts] for i in range(wanted_parts)]
+def split_list(alist, wanted_parts=1, mode="equal_word"):
+	result = []
+	if mode == 'equal_word':
+		# update this mode at 2017-01-06 
+		total_size = 0
+		total_size += sum([len(line[0]) + len(line[1]) for line in alist])
+		each_size = total_size / wanted_parts
+		current_count = 0
+		tmp_result = []
+		for line in alist:
+			if current_count > each_size:
+				result.append(tmp_result)
+				current_count = 0
+				tmp_result = []
+			current_count += len(line[0]) + len(line[1])
+			tmp_result.append(line)
+		if len(tmp_result) > 0:
+			result.append(tmp_result)
+
+	else:
+		length = len(alist)
+		result = [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts] for i in range(wanted_parts)]
+	return result
 
 def muti_feat_adder(cores=2, c_l=[], info=False):
 	import multiprocessing
@@ -261,7 +282,7 @@ def muti_feat_adder(cores=2, c_l=[], info=False):
 		numOfcuts = cores
 
 	for corpus in c_l:
-		for each in split_list(corpus[0], numOfcuts):
+		for each in split_list(corpus[0], numOfcuts, "equal_word"):
 			corpus_list.append([each, corpus[1]])
 
 	# single corpus

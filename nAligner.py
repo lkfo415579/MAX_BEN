@@ -1,5 +1,4 @@
 #encoding: utf-8
-import wrapper.m_c as m_c
 from optparse import OptionParser, SUPPRESS_HELP , OptionGroup
 def main():
 	usage = "Usage: %prog [-h] [-r|-t|-l] [[sub_options] arg]"+"\n"
@@ -144,6 +143,7 @@ def main():
 			'chinese':options.chinese}
 		m_c.l(lex_args)
 
+import wrapper.m_c as m_c
 if __name__ == "__main__":
 	import sys
 	try: 
