@@ -1,7 +1,7 @@
 #encoding: utf-8
 from optparse import OptionParser, SUPPRESS_HELP , OptionGroup
 def main():
-	usage = "Usage: %prog [-h] [-r|-t|-l] [[sub_options] arg]"+"\n"
+	usage = "Date:6/9/2017\n"+"Usage: %prog [-h] [-r|-t|-l] [[sub_options] arg]"+"\n"
 	parser = OptionParser(usage,add_help_option=False)
 	parser.add_option("-h", "--help",	action="help",	help="Display Help Menu Again.")
 	
@@ -11,8 +11,8 @@ def main():
 	group.add_option("--rt",		dest="targetfile_r",	default="zh-en/train/ted.en",	help="Targetfile name.[default: %default]")
 	group.add_option("--rlm",		dest="lexical",			default="zh-en/lex/lex.e2f",			help="Lexical_Model name.[default: %default]")
 	group.add_option("--rm",		dest="outputmodel",		default="zh-en/model/model.p",		help="Output maximum entropy model name.[default: %default]")
-	group.add_option("--rf",		dest="outputfeature",	default="no",					help="Output featuresets name.[default: %default]")
-	group.add_option("--re",		dest="testset",			default=0.02,	type="float",	help="The percentage of testset size.[default: %default]")
+	group.add_option("--rf",		dest="outputfeature",	default="no",					help="Output featuresets file name.[default: %default]")
+	group.add_option("--re",		dest="testset",			default=0.02,	type="float",	help="DAMN The percentage of testset size.[default: %default]")
 	group.add_option("--rc",		dest="cores",			default=8,		type="int",		help="The amount of cores.[default: %default]")
 	#group.add_option("--ro",		dest="order",			default="e2f",					help="The order of lexical model.[default: %default]")
 	group.add_option("--rTFPN",		dest="TFPN",			default=1000,	type="int",		help="The amount of testset for TFPN.[default: %default]")
@@ -30,7 +30,7 @@ def main():
 	group2.add_option("--to",			dest="ok_rate_t",		default=0.95,	type="float",	help="OK RATE greater than.[default: %default]")
 	group2.add_option("--tc",			dest="cores",			default=8,		type="int",		help="The amount of cores.[default: %default]")
 	group2.add_option("--tf",			dest="outputfile",		default="zh-en/output",		help="Outputfile(ok,mid,wrong) ,total 3 files.[default: %default]")
-	group2.add_option("--te",			dest="testset",			default=0.0001,	type="float",	help="The percentage of testset size.[default: %default]")
+	group2.add_option("--te",			dest="testset",			default=0.001,	type="float",	help="The percentage of testset size.[default: %default]")
 	group2.add_option("--ts_text",		dest="sourcefile_t_origin",	default="",					help="unprocess of sourcefile name.[default: %default]")
 	group2.add_option("--tt_text",		dest="targetfile_t_origin",	default="",					help="unprocess of targetfile name.[default: %default]")
 	parser.add_option_group(group2)
@@ -39,7 +39,7 @@ def main():
 	group3.add_option("-l", "--lexfilter",	dest="lex",	action="store_true",		help="Start filtering lexical model.",	default=False)
 	group3.add_option("--ll",	dest="ori_lex",		default="zh-en/lex",					help="Original Lexical Model name.[default: %default]")
 	group3.add_option("--lo",	dest="order",		default="e2f",							help="The order of lexical model.[default: %default]")
-	group3.add_option("--lh",	dest="threshold",	default=0.01,	type="float",			help="Filter Word's Pro is less than.[default: %default]")
+	group3.add_option("--lh",	dest="threshold",	default=0.02,	type="float",			help="Filter Word's Pro is less than.[default: %default]")
 	group3.add_option("--lt",	dest="top",			default=False,	action="store_true",	help="Enable Filter Top 10 Words.[default: %default]")
 	group3.add_option("--ls",	dest="symbol",		default=True,	action="store_false",	help="Disable filter symbol.[default: %default]")
 	group3.add_option("--lc",	dest="chinese",		default=True,	action="store_false",	help="Disable filter chinese.[default: %default]")
