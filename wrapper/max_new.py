@@ -195,6 +195,9 @@ def gender_features(en, zh):
 
 	#print features
 	#sys.exit()
+	#print "%%%CORE"""
+	#print features
+	#print "%%%CORE"""
 	return features
 
 # return the count for how many digit in input
@@ -318,6 +321,11 @@ def check_count(feat, tag):
 	print 'Total [' + tag + '] : ' + str(total)
 
 def test_maxent(algorithm, train_set, test_set):
+	print "XXXXXXFeaturest DISPLAYXXXXXXX"
+	print "F_LEN:%d" % len(train_set)
+	print train_set[0]
+	print "XXXXXXFeaturest DISPLAYXXXXXXX"
+	####
 	start_time = time.time()
 	active_megam()
 	print'%11s' % algorithm
@@ -704,18 +712,21 @@ def prepare_fset(args):
 
 	n_cores = int(args['cores'])
 	featuresets = muti_feat_adder(n_cores, c_l)
-	
+	#print "featFFFFF:%d" % len(featuresets)
 	random.shuffle(featuresets)
 	#featuresets = [(gender_features(zh, en), "OK") for (zh, en) in corpus]
 	featuresets_len = len(featuresets)
-	#ratio_f_len = float(args['len_test_sets'])
+	ratio_f_len = float(args['len_test_sets'])
 	#f_len = int(featuresets_len * ratio_f_len)
 	#devtest = featuresets[1000:2000]
 	#train = featuresets[f_len:]
 	#test = featuresets[:f_len]
-	test_len = 3000 
+	print "test_rate,Len Of featurests:%s" % args['len_test_sets']," ",featuresets_len
+	test_len = int(float(featuresets_len) * ratio_f_len)
+	#test_len = int(test_len)
+	#print "LEN:%d" % test_len
 	train, test = [], []
-	extract_test_distinct = float(float(featuresets_len) / test_len)
+	extract_test_distinct = float(float(featuresets_len / test_len))
 	current_sum = 0.0
 	next_extract = extract_test_distinct
 	for i in range(featuresets_len):
