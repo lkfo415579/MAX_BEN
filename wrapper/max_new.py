@@ -195,6 +195,9 @@ def gender_features(en, zh):
 
 	#print features
 	#sys.exit()
+	#print "%%%CORE"""
+	#print features
+	#print "%%%CORE"""
 	return features
 
 # return the count for how many digit in input
@@ -284,7 +287,11 @@ def muti_feat_adder(cores=2, c_l=[], info=False):
 	for corpus in c_l:
 		for each in split_list(corpus[0], numOfcuts, "equal_word"):
 			corpus_list.append([each, corpus[1]])
-
+	
+	#print "DEBUG: corpus_LIST %d" % len(corpus_list)
+	if cores+1 > len(corpus_list):
+		cores = len(corpus_list)
+		
 	# single corpus
 	for x in range(1, cores + 1):
 		tmp_q = Queue()
@@ -318,6 +325,11 @@ def check_count(feat, tag):
 	print 'Total [' + tag + '] : ' + str(total)
 
 def test_maxent(algorithm, train_set, test_set):
+	print "XXXXXXFeaturest DISPLAYXXXXXXX"
+	print "F_LEN:%d" % len(train_set)
+	print train_set[0]
+	print "XXXXXXFeaturest DISPLAYXXXXXXX"
+	####
 	start_time = time.time()
 	active_megam()
 	print'%11s' % algorithm
@@ -550,7 +562,7 @@ def find_match(args, classifier):
 		corpus_ok = sort_corpus(corpus_ok);
 	
 	#for debug use only
-	print_corpus(corpus_ok, '')
+	#print_corpus(corpus_ok, '')
 	#####
 	print '###Generating Windowsize corpus###'
 	
@@ -704,18 +716,21 @@ def prepare_fset(args):
 
 	n_cores = int(args['cores'])
 	featuresets = muti_feat_adder(n_cores, c_l)
-	
+	#print "featFFFFF:%d" % len(featuresets)
 	random.shuffle(featuresets)
 	#featuresets = [(gender_features(zh, en), "OK") for (zh, en) in corpus]
 	featuresets_len = len(featuresets)
-	#ratio_f_len = float(args['len_test_sets'])
+	ratio_f_len = float(args['len_test_sets'])
 	#f_len = int(featuresets_len * ratio_f_len)
 	#devtest = featuresets[1000:2000]
 	#train = featuresets[f_len:]
 	#test = featuresets[:f_len]
-	test_len = 3000 
+	print "test_rate,Len Of featurests:%s" % args['len_test_sets']," ",featuresets_len
+	test_len = int(float(featuresets_len) * ratio_f_len)
+	#test_len = int(test_len)
+	#print "LEN:%d" % test_len
 	train, test = [], []
-	extract_test_distinct = float(float(featuresets_len) / test_len)
+	extract_test_distinct = float(float(featuresets_len / test_len))
 	current_sum = 0.0
 	next_extract = extract_test_distinct
 	for i in range(featuresets_len):
@@ -866,7 +881,7 @@ def find_single_match(corpus, args, f, classifier):
 	
 def RE_search(file_name):
 	import re, mmap
-	phrase = '<doc.*?">([\S\s]+?)<\/doc>'
+	phrase = '<doc.*?>([\S\s]+?)<\/doc>'
 
 	with open(file_name, 'r+') as f:
 		data = mmap.mmap(f.fileno(), 0)
@@ -918,7 +933,7 @@ def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
 
 	docs_en = RE_search(en_dir)
 	docs_zh = RE_search(zh_dir)
-	l_docs = len(docs_zh) - 1
+	l_docs = len(docs_zh)
 	print 'Total wiki pages : %d ' % l_docs
 	
 	doc_id = 0
