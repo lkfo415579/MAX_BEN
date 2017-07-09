@@ -287,11 +287,7 @@ def muti_feat_adder(cores=2, c_l=[], info=False):
 	for corpus in c_l:
 		for each in split_list(corpus[0], numOfcuts, "equal_word"):
 			corpus_list.append([each, corpus[1]])
-	
-	#print "DEBUG: corpus_LIST %d" % len(corpus_list)
-	if cores+1 > len(corpus_list):
-		cores = len(corpus_list)
-		
+
 	# single corpus
 	for x in range(1, cores + 1):
 		tmp_q = Queue()
@@ -562,7 +558,7 @@ def find_match(args, classifier):
 		corpus_ok = sort_corpus(corpus_ok);
 	
 	#for debug use only
-	#print_corpus(corpus_ok, '')
+	print_corpus(corpus_ok, '')
 	#####
 	print '###Generating Windowsize corpus###'
 	
@@ -881,7 +877,7 @@ def find_single_match(corpus, args, f, classifier):
 	
 def RE_search(file_name):
 	import re, mmap
-	phrase = '<doc.*?>([\S\s]+?)<\/doc>'
+	phrase = '<doc.*?">([\S\s]+?)<\/doc>'
 
 	with open(file_name, 'r+') as f:
 		data = mmap.mmap(f.fileno(), 0)
@@ -933,7 +929,7 @@ def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
 
 	docs_en = RE_search(en_dir)
 	docs_zh = RE_search(zh_dir)
-	l_docs = len(docs_zh)
+	l_docs = len(docs_zh) - 1
 	print 'Total wiki pages : %d ' % l_docs
 	
 	doc_id = 0
@@ -971,3 +967,4 @@ def find_wiki_match(args, classifier):
 	print '####OutputFile='+output_file+'####'
 	process_xml_corpus(en_dir, zh_dir, args, output_file, classifier)
 	print("---Total Used : %s Seconds ---" % (time.time() - start_time))
+

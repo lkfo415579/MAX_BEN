@@ -1,13 +1,13 @@
-work_dir=zh-pt
-source=$work_dir/wiki_zh.8055
+work_dir=zh-en
+source=$work_dir/wiki/sea.zh
 #source=$work_dir/zh_wiki.delete.gb.segment.re
-target=$work_dir/wiki_pt.8055
+target=$work_dir/wiki/sea.en
 #target=$work_dir/pt_wiki.tok.re
 #source=$work_dir/test/junk.zh
 #target=$work_dir/test/junk.pt
-lex_e2f=$work_dir/lex/lex.e2f_f
-model=$work_dir/model/law2_t.model.p
-output_name=$work_dir/match/anson4.match
+lex_e2f=$work_dir/lex.e2f_f
+model=$work_dir/model/200w.model.p
+output_name=$work_dir/match/sea.match
 
 #Load-Test-Find Options:
 #-t, --test          Start Load-Test-Find.
@@ -30,5 +30,5 @@ python wiki_Alinger.py -m \
 --ms $source \
 --mt $target \
 --mh 0.95 \
---mc 16 --mo $output_name
+--mc 2 --mo $output_name
 

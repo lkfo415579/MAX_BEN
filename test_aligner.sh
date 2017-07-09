@@ -1,10 +1,10 @@
-work_dir=zh-pt
-source=$work_dir/test/test.50m.tail.zh.1
-target=$work_dir/test/test.50m.tail.pt.1
+work_dir=zh-en
+source=$work_dir/s_200w.20w.zh
+target=$work_dir/s_200w.20w.en
 #source=$work_dir/test/junk.zh
 #target=$work_dir/test/junk.pt
-lex_e2f=$work_dir/lex/lex.0d05-0d95.e2f
-model=$work_dir/model/500k.zh-pt.0d05-0d95.model.p
+lex_e2f=$work_dir/lex.e2f_f
+model=$work_dir/model/200w.model.p
 output_name=$work_dir/output/output
 
 #Load-Test-Find Options:
@@ -27,7 +27,7 @@ python nAligner.py -t \
 --tt $target \
 --tlm $lex_e2f \
 --tm $model \
---tc 16 \
---to 0.95 \
---tw 0.95 \
+--tc 26 \
+--to 0.97 \
+--tw 0.97 \
 --tf $output_name
