@@ -288,6 +288,10 @@ def muti_feat_adder(cores=2, c_l=[], info=False):
 		for each in split_list(corpus[0], numOfcuts, "equal_word"):
 			corpus_list.append([each, corpus[1]])
 
+	
+	#check lines of corpus
+	if len(corpus_list) < cores:
+		cores = len(corpus_list)
 	# single corpus
 	for x in range(1, cores + 1):
 		tmp_q = Queue()
@@ -877,7 +881,7 @@ def find_single_match(corpus, args, f, classifier):
 	
 def RE_search(file_name):
 	import re, mmap
-	phrase = '<doc.*?">([\S\s]+?)<\/doc>'
+	phrase = '<doc.*?>([\S\s]+?)<\/doc>'
 
 	with open(file_name, 'r+') as f:
 		data = mmap.mmap(f.fileno(), 0)
