@@ -832,51 +832,38 @@ def find_single_match_ALL(corpus, args, f, classifier):
     run = 0
     
     #create wish_list,
-    wish_list = []
-    ############
+    try:
+        wish_list.clear()
+    except UnboundLocalError:
+        wish_list = dict()
+    
     saver_wish_list = {}
     now_index = 1
     
     print "Corpus_size2 :{0}".format(corpus_size)
-    #print corpus[-3:]
+    print corpus[-3:]
     print "F_SIZE :{0}".format(f_size)
     
     print ori_corpus[:3]
-    for index in range(corpus_size, f_size):
+    for index in range(0, f_size):
+        #print f_all[index]
         pdist = classifier.prob_classify(f_all[index][0])
         ok = float(pdist.prob('OK'))
+        #wrong = float(pdist.prob('WRONG'))
         if ok >= ok_rate:
-            wish_list.append([ok,index])
-        #zh-en model, [1] = zh, [0] = en <- ori_corpus
-        #print "ZH_LINE:{0}".format(ori_corpus[index][1])
-        if (index+1) % corpus_size == 0 :
-            #print "ZH_LINE:{0}".format(ori_corpus[index-1][1])
-            #print "ZH_LINE2:{0}".format(ori_corpus[index][1])
-            
-            #print "INDEX :{0}".format(index)
-            if len(wish_list) > 0:
-                # finish searching retrieve the highest matched line
-                
-                #h_index = max(wish_list, key=(lambda k: wish_list[k]))
-                #print max(wish_list,key=lambda k: k[0])
-                h_index = wish_list.index(max(wish_list,key=lambda k: k[0]))
-                #print "H_INDEX :{0}".format(h_index)
-                
-                zh_line = now_index
-                en_line = h_index % corpus_size
-                score = wish_list[h_index][0] * 100
+            #print index
+            wish_list.update({index: [ok]})
+        print "ZH_LINE:{0}".format(ori_corpus[index][1])
+        if index % corpus_size == 0 and (index != 0):
+            print "INDEX :{0}".format(index)
+            if wish_list:
                 #print wish_list
-                ori_index = wish_list[h_index][1]
-                
-                #boss = [str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(corpus[zh_line][1]),' '.join( corpus[en_line][0])]
-                
-                boss = [str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(ori_corpus[ori_index][1]),' '.join( ori_corpus[ori_index][0])]
-                f.write(str(zh_line)+' ||| '+ ' ||| '.join(boss) + '\n')
-                
-                wish_list = []
-                num_match += 1
-                '''
-                
+                # finish searching retrieve the highest matched line
+                try:
+                    h_index = max(wish_list.iterkeys(), key=(lambda k: wish_list[k][0]))
+                except:
+                    break
+                print "H_INDEX :{0}".format(h_index)
                 if args['sort']:
                     zh_line = (h_index % corpus_size) - num_blank
                     en_line = now_index
@@ -885,6 +872,14 @@ def find_single_match_ALL(corpus, args, f, classifier):
                     en_line = now_index
                 
                 print "zh_line :{0}".format(zh_line)
+                #print "H:%d" % h_index
+                #f.write('OK : ' + "{0:.3f}%".format(wish_list[h_index][0] * 100) + '\n')
+                #f.write('WRONG : ' + "{0:.3f}%".format((1-wish_list[h_index][0]) * 100) + '\n')
+                #f.write('Line(zh) : ' + str(zh_line) + '\n')
+                #f.write('Line(en) : ' + str(en_line) + '\n')
+                #f.write('Zh : '+ ' '.join(map(str, ori_corpus[h_index][1])) + '\n')
+                #f.write('En : '+ ' '.join(map(str, ori_corpus[h_index][0])) + '\n')
+                #f.write('--------------\n')
                 #add by 7/17/2017
                 score = wish_list[h_index][0] * 100
                 #f.write(' ||| '.join([str(zh_line),str(en_line),"{0:.3f}%".format(score), "{0:.3f}%".format(100-score), ' '.join(ori_corpus[h_index][1]),  ' '.join( ori_corpus[h_index][0])]) + '\n')
@@ -895,16 +890,15 @@ def find_single_match_ALL(corpus, args, f, classifier):
                     saver_wish_list[zh_line].append([str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(ori_corpus[h_index][1]),' '.join( ori_corpus[h_index][0])])
                 except:
                     saver_wish_list[zh_line] = [[str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(ori_corpus[h_index][1]),' '.join( ori_corpus[h_index][0])]]
-                '''
+                
                 
             #
             now_index += 1
         
-    
+
                 
                 
     #Re Handling the scores
-    '''
     for single_dog in saver_wish_list:
         num_match += 1
         if (len(saver_wish_list[single_dog]) > 1):
@@ -914,7 +908,6 @@ def find_single_match_ALL(corpus, args, f, classifier):
         else:
             f.write(str(single_dog)+' ||| '+ ' ||| '.join(saver_wish_list[single_dog][0]) + '\n')
     #print saver_wish_list
-    '''
     
     #####
     print 'Amount of match : ' + str(num_match) +'\n--------------\n'
