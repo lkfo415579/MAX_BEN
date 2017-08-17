@@ -687,6 +687,7 @@ def find_match(args, classifier):
     
     print("---Total Used : %s Seconds ---" % (time.time() - start_time))
 
+    
 def prepare_fset(args):
     import random
     global my_dict
@@ -699,6 +700,19 @@ def prepare_fset(args):
     corpus_ok = read_corpus(en_dir, zh_dir, "OK")
     corpus_wrong = read_corpus(en_dir, zh_dir, 'WRONG')
     corpus_wrong = shuffle_corpus(corpus_wrong, 'shift')
+    
+    
+    #Convert them into lower case
+    if args['lower']:
+        print "using lower:{0}, Processing Wait...".format(corpus_ok[0][0])
+        if corpus_ok[0][0][0].isalpha():
+            print "lower:0"
+            corpus_ok = convert_to_lower(corpus_ok,0)
+            corpus_wrong = convert_to_lower(corpus_wrong,0)
+        else:
+            print "lower:1"
+            corpus_ok = convert_to_lower(corpus_ok,1)
+            corpus_wrong = convert_to_lower(corpus_wrong,1)
     
     ###############################
     #0 is zh , 1 is en
@@ -826,6 +840,8 @@ def find_single_match_ALL(corpus, args, f, classifier):
     ############
     
     num_match = 0
+    blank_match = 0
+    
     ok_rate = float(args['ok_rate'])
     f_size = len(f_all)
     print '####Starting search the highest OK lines####'
@@ -836,6 +852,7 @@ def find_single_match_ALL(corpus, args, f, classifier):
     ############
     saver_wish_list = {}
     now_index = 1
+    
     
     print "Corpus_size2 :{0}".format(corpus_size)
     #print corpus[-3:]
@@ -854,27 +871,52 @@ def find_single_match_ALL(corpus, args, f, classifier):
             #print "ZH_LINE2:{0}".format(ori_corpus[index][1])
             
             #print "INDEX :{0}".format(index)
+            
             if len(wish_list) > 0:
                 # finish searching retrieve the highest matched line
                 
                 #h_index = max(wish_list, key=(lambda k: wish_list[k]))
                 #print max(wish_list,key=lambda k: k[0])
+                #wish_list = wish_list[1:]
                 h_index = wish_list.index(max(wish_list,key=lambda k: k[0]))
                 #print "H_INDEX :{0}".format(h_index)
+                #print wish_list
+                #print "MAX:%s" % h_index
+                #print "OMG:%s" % wish_list[h_index]
+                #sys.exit()
                 
                 zh_line = now_index
-                en_line = h_index % corpus_size
+                #en_line = h_index+1
+                en_line = h_index
                 score = wish_list[h_index][0] * 100
                 #print wish_list
                 ori_index = wish_list[h_index][1]
                 
+                ##"blankspace""Filter
+                #print "ORI:::::"+' '.join(ori_corpus[ori_index][1])
+                if (' '.join(ori_corpus[ori_index][1]) == '[blankspace]'):
+                    continue
+                
+                ##DEBUG
+                
+                for wish in wish_list:
+                    tmp_ori_index = wish[1]
+                    print "{0}|||{1}|||{2}|||{3}|||{4}|||{5}".format(wish[0],' '.join(ori_corpus[tmp_ori_index][1]),' '.join( ori_corpus[tmp_ori_index][0]),f_all[tmp_ori_index],zh_line,wish_list.index(wish))
+                
+                
+                ##DEBUG
                 #boss = [str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(corpus[zh_line][1]),' '.join( corpus[en_line][0])]
                 
                 boss = [str(en_line),"{0:.3f}%".format(score),"{0:.3f}%".format(100-score),' '.join(ori_corpus[ori_index][1]),' '.join( ori_corpus[ori_index][0])]
                 f.write(str(zh_line)+' ||| '+ ' ||| '.join(boss) + '\n')
                 
                 wish_list = []
-                num_match += 1
+                
+                #check blank or not
+                if en_line == 0:
+                    blank_match += 1
+                else:
+                    num_match += 1
                 '''
                 
                 if args['sort']:
@@ -919,10 +961,12 @@ def find_single_match_ALL(corpus, args, f, classifier):
     #####
     print 'Amount of match : ' + str(num_match) +'\n--------------\n'
     #f.write('Amount of match : ' + str(num_match)+'\n--------------\n')
-    f.write("$"+str(num_match)+" ||| ")
+    f.write("$"+str(num_match)+" ||| "+str(blank_match)+" ||| ")
     
     global total_match
+    global total_blank
     total_match += num_match
+    total_blank += blank_match
 
     
 def find_single_match(corpus, args, f, classifier):
@@ -1074,9 +1118,17 @@ def read_corpus_str(str_en, str_zh):
             zh_words = ["[blankspace]"]
         corpus.append([en_words, zh_words])
     return corpus
+
+def convert_to_lower(corpus_ok,pos):
+    for x in range(1,len(corpus_ok)):
+        corpus_ok[x][pos] = [yy.lower() for yy in corpus_ok[x][pos]]
+        #print corpus_ok[x][pos]
+    return corpus_ok
+
     
 def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
     global total_match
+    global total_blank
     sort = args['sort']
     f = open(full_name, 'wa')
 
@@ -1087,6 +1139,7 @@ def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
     
     doc_id = 0
     total_match = 0
+    total_blank = 0
     for x in range(0, l_docs):
         try:
             corpus_ok = read_corpus_str(docs_en[x], docs_zh[x])
@@ -1095,6 +1148,16 @@ def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
             
         if sort:
             corpus_ok = sort_corpus(corpus_ok);
+            
+        #if it is eng, convert into lower case
+        if args['m_lower']:
+            print "using m_lower:{0}".format(corpus_ok[1][0])
+            if corpus_ok[1][0][0].isalpha():
+                print "m_lower:0"
+                corpus_ok = convert_to_lower(corpus_ok,0)
+            else:
+                print "m_lower:1"
+                corpus_ok = convert_to_lower(corpus_ok,1)
             
         #whether output all matches,7/17/2017
         if (args['m_all']):
@@ -1116,7 +1179,7 @@ def process_xml_corpus(en_dir, zh_dir, args, full_name, classifier):
         f.write('------------------\n')
     
     print 'Total of match : ' + str(total_match) +'\n--------------\n'
-    f.write('Total of match : ' + str(total_match)+'\n')
+    f.write('Total of match : ' + str(total_match)+', Total of Blank match : '+str(total_blank)+'\n')
     #f.write('Total of match : ' + str(total_match)+'\n--------------\n')
     
     f.close()
