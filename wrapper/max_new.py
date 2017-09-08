@@ -404,6 +404,31 @@ def find_wrong(args, classifier):
     print '####OutputFile: wrong='+output_file_tu+' ok='+output_file_ta+'####'
 
     corpus_ok = read_corpus(en_dir_2, zh_dir_2, 'OK')
+    
+    #Convert them into lower case
+    if args['lower']:
+        print "LOWER method:ONLY WORKS ON ZH-EN,checking...."
+        numOfAlapha_A = 0
+        numOfAlapha_B = 0
+        #[line][0=en,1=zh]
+        #print corpus_ok[0][0]
+        #print corpus_ok[1][0]
+        
+        for word in corpus_ok[0][0]:
+            if word[0].isalpha():
+                numOfAlapha_A+= 1
+        for word in corpus_ok[0][1]:
+            if word[0].isalpha():
+                numOfAlapha_B+= 1
+        if numOfAlapha_A > numOfAlapha_B:
+            corpus_ok = convert_to_lower(corpus_ok,0)
+            print "Using lower:{0}, Processing Wait...,Winner:{1}".format(corpus_ok[0][0],0)
+        else:
+            corpus_ok = convert_to_lower(corpus_ok,1)
+            print "Using lower:{0}, Processing Wait...,Winner:{1}".format(corpus_ok[0][1],1)
+        
+    
+    
     n_c_l = [[corpus_ok, "OK"]]
     
     if args['targetfile_t_origin'] != "":
@@ -901,7 +926,7 @@ def find_single_match_ALL(corpus, args, f, classifier):
                 
                 for wish in wish_list:
                     tmp_ori_index = wish[1]
-                    print "{0}|||{1}|||{2}|||{3}|||{4}|||{5}".format(wish[0],' '.join(ori_corpus[tmp_ori_index][1]),' '.join( ori_corpus[tmp_ori_index][0]),f_all[tmp_ori_index],zh_line,wish_list.index(wish))
+                    #print "{0}|||{1}|||{2}|||{3}|||{4}|||{5}".format(wish[0],' '.join(ori_corpus[tmp_ori_index][1]),' '.join( ori_corpus[tmp_ori_index][0]),f_all[tmp_ori_index],zh_line,wish_list.index(wish))
                 
                 
                 ##DEBUG

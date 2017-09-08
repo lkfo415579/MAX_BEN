@@ -34,6 +34,7 @@ def main():
     group2.add_option("--te",            dest="testset",            default=0.001,    type="float",    help="The percentage of testset size.[default: %default]")
     group2.add_option("--ts_text",        dest="sourcefile_t_origin",    default="",                    help="unprocess of sourcefile name.[default: %default]")
     group2.add_option("--tt_text",        dest="targetfile_t_origin",    default="",                    help="unprocess of targetfile name.[default: %default]")
+    group2.add_option("--t_lower",    dest="lower",            default=False,                    help="Set one of the language into lower case",    action="store_true")
     parser.add_option_group(group2)
     
     group3 = OptionGroup(parser, "Lexfilter Options")
@@ -114,7 +115,8 @@ def main():
             'lex_table':options.lexical,
             'len_test_sets':options.testset,
             'targetfile_t_origin':options.targetfile_t_origin,
-            'sourcefile_t_origin':options.sourcefile_t_origin}
+            'sourcefile_t_origin':options.sourcefile_t_origin,
+            'lower':options.lower}
         #omg i will change it later
         m_c.find_wrong(find_args)
     elif options.match:

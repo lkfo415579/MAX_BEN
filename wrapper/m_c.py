@@ -13,7 +13,7 @@ if sys.platform == 'linux2':
 ######default area#########
 default_max =  {'zh_dir':'zh-en/test.zh','en_dir':'zh-en/test.en','cores':'12','lex_table':'zh-en/zh2e_f','len_test_sets':0.02,'lower':False}
 default_lex =  {'filename':'zh-en/zh2e','less_than':0.01,'order':'e2f','top':False,'symbol':True,'chinese':True}
-default_find = {'zh_dir':'zh-en/1000.test.zh','en_dir':'zh-en/1000.test.en','wrong_rate':0.95,'ok_rate':0.95,'cores':12,'output':'error/1000.test','lex_table':'zh-en/zh2e_f','len_test_sets':0.07,'targetfile_t_origin':"",'sourcefile_t_origin':""}
+default_find = {'zh_dir':'zh-en/1000.test.zh','en_dir':'zh-en/1000.test.en','wrong_rate':0.95,'ok_rate':0.95,'cores':12,'output':'error/1000.test','lex_table':'zh-en/zh2e_f','len_test_sets':0.07,'targetfile_t_origin':"",'sourcefile_t_origin':"",'lower':False}
 default_match = {'zh_dir':'zh-en/1000.test.zh','en_dir':'zh-en/1000.test.en','ok_rate':0.95,'cores':12,'output':'match/1000.test.match','lex_table':'zh-en/zh2e_f','win_size':0.05,'sort':True,'targetfile_t_origin':"",'sourcefile_t_origin':"",'m_all':False,'m_lower':False}
 default_pre =  {'f_sets_file':'object/f_sets.p','class_file':'object/class.p'}
 default_save = {'class_output_file':'object/class.p','f_sets_output_file':'object/f_sets.p','id_f':0}
